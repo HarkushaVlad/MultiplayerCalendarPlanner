@@ -1,0 +1,9 @@
+{
+  "Name": "Multiplayer Calendar Planner",
+  "Author": "Reprodudix",
+  "Version": "1.0.0",
+  "Description": "Adds the ability to mark calendar days to indicate that a player reserves in-game resources for themselves.",
+  "UniqueID": "Reprodudix.MultiplayerCalendarPlanner",
+  "EntryDll": "MultiplayerCalendarPlanner.dll",
+  "UpdateKeys": []
+}
