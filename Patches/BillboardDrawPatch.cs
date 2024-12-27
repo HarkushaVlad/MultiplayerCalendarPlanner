@@ -2,6 +2,7 @@ using System.Reflection;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MultiplayerCalendarPlanner.Utils;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -37,17 +38,7 @@ namespace MultiplayerCalendarPlanner.Patches
 
         public static void Postfix(Billboard __instance, SpriteBatch b)
         {
-            var fieldInfo =
-                typeof(Billboard).GetField("dailyQuestBoard", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            var value = fieldInfo?.GetValue(__instance);
-
-            if (value is null)
-                return;
-
-            var isDailyQuestBoard = (bool)value;
-
-            if (isDailyQuestBoard)
+            if (!BillboardUtils.IsCalendar(__instance))
                 return;
 
             List<ClickableTextureComponent> calendarDays = __instance.calendarDays;
@@ -59,16 +50,9 @@ namespace MultiplayerCalendarPlanner.Patches
 
             foreach (var day in calendarDays)
             {
-                var hammerIcon = new ClickableTextureComponent(
-                    new Rectangle(
-                        day.bounds.X + Game1.tileSize - Game1.tileSize / 32,
-                        day.bounds.Y + Game1.tileSize / 10,
-                        Game1.tileSize / 2,
-                        Game1.tileSize / 2
-                    ),
-                    Game1.content.Load<Texture2D>("LooseSprites/Cursors"),
-                    new Rectangle(366, 373, 16, 16),
-                    2f
+                var hammerIcon = IconUtils.GetHammerTexture(
+                    day.bounds.X + Game1.tileSize - Game1.tileSize / 32,
+                    day.bounds.Y + Game1.tileSize / 10
                 );
 
                 hammerIcon.draw(b);
@@ -76,7 +60,8 @@ namespace MultiplayerCalendarPlanner.Patches
                 if (hammerIcon.containsPoint(x, y))
                 {
                     customHoverText =
-                        ModEntry.StaticHelper.Translation.Get("event.reserveRobin", new { playerName = Game1.player.Name });
+                        ModEntry.StaticHelper.Translation.Get("event.reserveRobin",
+                            new { playerName = Game1.player.Name });
                 }
 
                 var farmer = Game1.player;
@@ -96,16 +81,9 @@ namespace MultiplayerCalendarPlanner.Patches
                     who: farmer
                 );
 
-                var hardWoodIcon = new ClickableTextureComponent(
-                    new Rectangle(
-                        day.bounds.X + Game1.tileSize + Game1.tileSize / 2,
-                        day.bounds.Y + Game1.tileSize / 10,
-                        Game1.tileSize / 2,
-                        Game1.tileSize / 2
-                    ),
-                    Game1.content.Load<Texture2D>("Maps/springobjects"),
-                    new Rectangle(210, 466, 13, 14),
-                    2f
+                var hardWoodIcon = IconUtils.GetHardWoodTexture(
+                    day.bounds.X + Game1.tileSize + Game1.tileSize / 2,
+                    day.bounds.Y + Game1.tileSize / 10
                 );
 
                 hardWoodIcon.draw(b);
@@ -113,7 +91,8 @@ namespace MultiplayerCalendarPlanner.Patches
                 if (hardWoodIcon.containsPoint(x, y))
                 {
                     customHoverText =
-                        ModEntry.StaticHelper.Translation.Get("event.reserveSecretWoods", new { playerName = Game1.player.Name });
+                        ModEntry.StaticHelper.Translation.Get("event.reserveSecretWoods",
+                            new { playerName = Game1.player.Name });
                 }
 
                 var portraitPositionHardwood = new Vector2(

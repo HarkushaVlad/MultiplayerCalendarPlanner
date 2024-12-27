@@ -15,6 +15,7 @@ namespace MultiplayerCalendarPlanner
         {
             var harmony = new Harmony(ModManifest.UniqueID);
             BillboardDrawPatch.ApplyPatch(harmony);
+            BillboardLeftClickPatch.ApplyPatch(harmony);
 
             StaticHelper = helper;
 
