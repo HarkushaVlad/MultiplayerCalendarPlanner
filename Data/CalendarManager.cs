@@ -1,3 +1,4 @@
+using MultiplayerCalendarPlanner.Constants;
 using StardewValley;
 
 namespace MultiplayerCalendarPlanner.Data;
@@ -22,6 +23,11 @@ public static class CalendarManager
         _calendarData.Events.Add(calendarEvent);
     }
 
+    public static bool RemoveEvent(CalendarEvent calendarEvent)
+    {
+        return _calendarData.Events.Remove(calendarEvent);
+    }
+
     public static void ReplaceCalendarData(CalendarData calendarData)
     {
         _calendarData = calendarData;
@@ -30,6 +36,14 @@ public static class CalendarManager
     public static List<CalendarEvent> GetEventsForDay(int day, Season season)
     {
         return _calendarData.Events.Where(e => e.Day == day && e.Season == season).ToList();
+    }
+
+    public static CalendarEvent? FindEvent(int day, Season season, long playerId, Activity activity)
+    {
+        var exampleEvent = new CalendarEvent(day, season, playerId, activity);
+
+        return _calendarData.Events
+            .FirstOrDefault(e => e.Equals(exampleEvent));
     }
 
     public static CalendarData GetCalendarData()

@@ -1,7 +1,8 @@
 {
-  "event.reserveRobin": "{{playerName}} has reserved Robin for a project.",
-  "event.reserveSecretWoods": "{{playerName}} has reserved the Secret Woods\nfor hardwood gathering.",
-  "event.unknown": "{{playerName}} has reserved the unknown event.",
+  "event.reserveRobin": "Reserve Robin for a project",
+  "event.unreserveRobin": "Remove reservation for Robin",
+  "event.reserveSecretWoods": "Reserve the Secret Woods for hardwood gathering",
+  "event.unreserveSecretWoods": "Remove reservation for the Secret Woods",
   "event.reserve": "What do you want to reserve on {{day}}?",
   "event.string": "{{playerName}} reserves {{activity}} on day {{day}} of {{season}}"
 }

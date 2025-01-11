@@ -1,3 +1,4 @@
+using MultiplayerCalendarPlanner.Constants;
 using MultiplayerCalendarPlanner.Data;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -6,60 +7,80 @@ namespace MultiplayerCalendarPlanner.Sync;
 
 public static class MultiplayerManager
 {
-    private const string AddFarmHandEventToAllMessage = "AddFarmHandEventToAll";
-    private const string AddHostEventToFarmHandsMessage = "AddHostEventToFarmHands";
-    private const string AddHostCalendarDataToFarmHandsMessage = "AddHostCalendarDataToFarmHands";
+    private static bool IsAllowedToSend(bool isMainPlayerRequired, string actionName)
+    {
+        if (Context.IsMainPlayer != isMainPlayerRequired)
+        {
+            ModEntry.StaticMonitor.Log(
+                $"Attempted to send '{actionName}' from an invalid context. This operation is ignored.",
+                LogLevel.Warn
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void SendMessage<T>(T messageData, MultiplayerMessage messageType)
+    {
+        ModEntry.StaticHelper.Multiplayer.SendMessage(
+            messageData,
+            messageType.ToString(),
+            new[] { ModEntry.StaticHelper.ModRegistry.ModID }
+        );
+    }
 
     public static void AddFarmHandEventToAll(CalendarEvent calendarEvent)
     {
-        if (Context.IsMainPlayer)
-        {
-            ModEntry.StaticMonitor.Log(
-                "Attempted to send 'AddFarmHandEventToAll' from the main player. This operation is ignored.",
-                LogLevel.Warn
-            );
+        if (!IsAllowedToSend(isMainPlayerRequired: false, "AddFarmHandEventToAll"))
             return;
-        }
 
-        ModEntry.StaticHelper.Multiplayer.SendMessage(calendarEvent, AddFarmHandEventToAllMessage,
-            new[] { ModEntry.StaticHelper.ModRegistry.ModID });
+        SendMessage(calendarEvent, MultiplayerMessage.AddFarmHandEventToAll);
+    }
+
+    public static void RemoveFarmHandEventFromAll(CalendarEvent calendarEvent)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: false, "RemoveFarmHandEventFromAll"))
+            return;
+
+        SendMessage(calendarEvent, MultiplayerMessage.RemoveFarmHandEventFromAll);
     }
 
     public static void AddHostEventToFarmHands(CalendarEvent calendarEvent)
     {
-        if (!Context.IsMainPlayer)
-        {
-            ModEntry.StaticMonitor.Log(
-                "Attempted to send 'AddHostEventToFarmHands' from a farmhand. This operation is ignored.",
-                LogLevel.Warn
-            );
+        if (!IsAllowedToSend(isMainPlayerRequired: true, "AddHostEventToFarmHands"))
             return;
-        }
 
-        ModEntry.StaticHelper.Multiplayer.SendMessage(calendarEvent, AddHostEventToFarmHandsMessage,
-            new[] { ModEntry.StaticHelper.ModRegistry.ModID });
+        SendMessage(calendarEvent, MultiplayerMessage.AddHostEventToFarmHands);
+    }
+
+    public static void RemoveHostEventFromFarmHands(CalendarEvent calendarEvent)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: true, "RemoveHostEventFromFarmHands"))
+            return;
+
+        SendMessage(calendarEvent, MultiplayerMessage.RemoveHostEventFromFarmHands);
     }
 
     public static void AddHostCalendarDataToFarmHands(CalendarData calendarData)
     {
-        if (!Context.IsMainPlayer)
-        {
-            ModEntry.StaticMonitor.Log(
-                "Attempted to send 'AddHostCalendarDataToFarmHands' from a farmhand. This operation is ignored.",
-                LogLevel.Warn
-            );
+        if (!IsAllowedToSend(isMainPlayerRequired: true, "AddHostCalendarDataToFarmHands"))
             return;
-        }
 
-        ModEntry.StaticHelper.Multiplayer.SendMessage(calendarData, AddHostCalendarDataToFarmHandsMessage,
-            new[] { ModEntry.StaticHelper.ModRegistry.ModID });
+        SendMessage(calendarData, MultiplayerMessage.AddHostCalendarDataToFarmHands);
     }
 
     public static void HandleReceivedMessage(ModMessageReceivedEventArgs e)
     {
-        switch (e.Type)
+        if (!Enum.TryParse(e.Type, out MultiplayerMessage messageType))
         {
-            case AddFarmHandEventToAllMessage:
+            ModEntry.StaticMonitor.Log($"Unknown message type received: {e.Type}", LogLevel.Warn);
+            return;
+        }
+
+        switch (messageType)
+        {
+            case MultiplayerMessage.AddFarmHandEventToAll:
                 var farmHandEvent = e.ReadAs<CalendarEvent>();
                 CalendarManager.AddEvent(farmHandEvent);
 
@@ -67,7 +88,15 @@ public static class MultiplayerManager
                     CalendarManager.SaveData();
                 break;
 
-            case AddHostEventToFarmHandsMessage:
+            case MultiplayerMessage.RemoveFarmHandEventFromAll:
+                var farmHandRemoveEvent = e.ReadAs<CalendarEvent>();
+                CalendarManager.RemoveEvent(farmHandRemoveEvent);
+
+                if (Context.IsMainPlayer)
+                    CalendarManager.SaveData();
+                break;
+
+            case MultiplayerMessage.AddHostEventToFarmHands:
                 if (Context.IsMainPlayer)
                     break;
 
@@ -75,7 +104,15 @@ public static class MultiplayerManager
                 CalendarManager.AddEvent(hostEvent);
                 break;
 
-            case AddHostCalendarDataToFarmHandsMessage:
+            case MultiplayerMessage.RemoveHostEventFromFarmHands:
+                if (Context.IsMainPlayer)
+                    break;
+
+                var hostRemoveEvent = e.ReadAs<CalendarEvent>();
+                CalendarManager.RemoveEvent(hostRemoveEvent);
+                break;
+
+            case MultiplayerMessage.AddHostCalendarDataToFarmHands:
                 if (Context.IsMainPlayer)
                     break;
 
