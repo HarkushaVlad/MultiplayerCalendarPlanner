@@ -4,6 +4,7 @@ using MultiplayerCalendarPlanner.Patches;
 using MultiplayerCalendarPlanner.Sync;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewValley;
 
 namespace MultiplayerCalendarPlanner
 {
@@ -29,8 +30,17 @@ namespace MultiplayerCalendarPlanner
 
         private void OnSaveLoaded(object? sender, EventArgs e)
         {
-            if (Context.IsMainPlayer)
+            if (!Context.IsMainPlayer)
+                return;
+
+            if (Game1.dayOfMonth == 1)
+            {
+                CalendarManager.ClearData();
+            }
+            else
+            {
                 CalendarManager.LoadData();
+            }
         }
 
         private void OnSaving(object? sender, EventArgs e)

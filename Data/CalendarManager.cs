@@ -6,16 +6,21 @@ namespace MultiplayerCalendarPlanner.Data;
 public static class CalendarManager
 {
     private static CalendarData _calendarData = new();
+    private const string ModDataKey = "calendarActivityData";
 
     public static void LoadData()
     {
-        _calendarData = ModEntry.StaticHelper.Data.ReadSaveData<CalendarData>("calendarActivityData") ??
-                        new CalendarData();
+        _calendarData = ModEntry.StaticHelper.Data.ReadSaveData<CalendarData>(ModDataKey) ?? new CalendarData();
     }
 
     public static void SaveData()
     {
-        ModEntry.StaticHelper.Data.WriteSaveData("calendarActivityData", _calendarData);
+        ModEntry.StaticHelper.Data.WriteSaveData(ModDataKey, _calendarData);
+    }
+
+    public static void ClearData()
+    {
+        ModEntry.StaticHelper.Data.WriteSaveData<>(ModDataKey, null);
     }
 
     public static void AddEvent(CalendarEvent calendarEvent)
