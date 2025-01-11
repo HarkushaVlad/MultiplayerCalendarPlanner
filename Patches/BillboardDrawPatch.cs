@@ -50,39 +50,36 @@ namespace MultiplayerCalendarPlanner.Patches
 
             var customHoverText = "";
 
+            const int rightActivityIconOffset = -Game1.tileSize / 2 + 6;
+            const int leftActivityIconOffset = Game1.tileSize / 32 + 3;
+
             foreach (var day in calendarDays)
             {
                 var season = (Season)Enum.Parse(typeof(Season), Game1.currentSeason, true);
                 var dayEvents = CalendarManager.GetEventsForDay(day.myID, season);
 
+                var iconOffset = rightActivityIconOffset;
+
                 foreach (var calendarEvent in dayEvents)
                 {
-                    var iconPosition = new Vector2(
-                        day.bounds.X + Game1.tileSize / 4,
-                        day.bounds.Y + Game1.tileSize / 4
-                    );
+                    var iconX = day.bounds.X + Game1.tileSize - iconOffset;
+                    var iconY = day.bounds.Y + Game1.tileSize / 10;
 
                     var activityIcon = calendarEvent.Activity switch
                     {
-                        Activity.Robin => IconUtils.GetHammerTexture(
-                            day.bounds.X + Game1.tileSize - Game1.tileSize / 32,
-                            day.bounds.Y + Game1.tileSize / 10
-                        ),
-                        Activity.HardWood => IconUtils.GetHardWoodTexture(
-                            day.bounds.X + Game1.tileSize + Game1.tileSize / 2,
-                            day.bounds.Y + Game1.tileSize / 10
-                        ),
+                        Activity.Robin => IconUtils.GetHammerTexture(iconX, iconY),
+                        Activity.HardWood => IconUtils.GetHardWoodTexture(iconX, iconY),
                         _ => null
                     };
 
                     if (activityIcon == null)
-                        return;
+                        continue;
 
                     activityIcon.draw(b);
 
                     var farmerPortraitPosition = new Vector2(
-                        iconPosition.X + Game1.tileSize / 2,
-                        iconPosition.Y
+                        iconX,
+                        iconY + Game1.tileSize / 4
                     );
 
                     var farmer = Game1.GetPlayer(calendarEvent.PlayerId);
@@ -95,6 +92,8 @@ namespace MultiplayerCalendarPlanner.Patches
                         facingDirection: 2,
                         who: farmer
                     );
+
+                    iconOffset = leftActivityIconOffset;
 
                     if (activityIcon.containsPoint(x, y))
                     {
@@ -116,6 +115,15 @@ namespace MultiplayerCalendarPlanner.Patches
                             )
                         };
                     }
+                }
+
+                // Draws a blue outline around the current day on the calendar
+                if (Game1.dayOfMonth == day.myID)
+                {
+                    var num = (int)(4.0 * Game1.dialogueButtonScale / 8.0);
+                    IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(379, 357, 3, 3),
+                        day.bounds.X - num, day.bounds.Y - num, day.bounds.Width + num * 2, day.bounds.Height + num * 2,
+                        Color.Blue, 4f, false);
                 }
             }
 

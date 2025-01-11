@@ -40,7 +40,7 @@ namespace MultiplayerCalendarPlanner.Utils
             var sourceRect = new Rectangle(210, 466, 13, 14);
 
             return new ClickableTextureComponent(
-                new Rectangle(x, y, Game1.tileSize / 2, Game1.tileSize / 2),
+                new Rectangle(x + 4, y, Game1.tileSize / 2 - 6, Game1.tileSize / 2),
                 texture,
                 sourceRect,
                 scale
