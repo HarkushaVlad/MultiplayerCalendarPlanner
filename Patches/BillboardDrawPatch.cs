@@ -65,6 +65,8 @@ namespace MultiplayerCalendarPlanner.Patches
                     var iconX = day.bounds.X + Game1.tileSize - iconOffset;
                     var iconY = day.bounds.Y + Game1.tileSize / 10;
 
+                    var alpha = day.myID < Game1.dayOfMonth ? 0.7f : 1f;
+
                     var activityIcon = calendarEvent.Activity switch
                     {
                         Activity.Robin => IconUtils.GetHammerTexture(iconX, iconY),
@@ -75,7 +77,11 @@ namespace MultiplayerCalendarPlanner.Patches
                     if (activityIcon == null)
                         continue;
 
-                    activityIcon.draw(b);
+                    activityIcon.draw(
+                        b,
+                        Color.White * alpha,
+                        layerDepth: 0.91f
+                    );
 
                     var farmerPortraitPosition = new Vector2(
                         iconX,
@@ -90,7 +96,8 @@ namespace MultiplayerCalendarPlanner.Patches
                         layerDepth: 0.91f,
                         scale: 1.5f,
                         facingDirection: 2,
-                        who: farmer
+                        who: farmer,
+                        alpha: alpha
                     );
 
                     iconOffset = leftActivityIconOffset;
