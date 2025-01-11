@@ -104,7 +104,10 @@ namespace MultiplayerCalendarPlanner.Patches
 
                     if (activityIcon.containsPoint(x, y))
                     {
-                        var playerName = farmer?.Name;
+                        var playerName = farmer != null
+                            ? farmer.Name
+                            : ModEntry.StaticHelper.Translation.Get(
+                                "event.Player");
 
                         customHoverText = calendarEvent.Activity switch
                         {
