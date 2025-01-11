@@ -63,7 +63,7 @@ namespace MultiplayerCalendarPlanner.Patches
                 foreach (var calendarEvent in dayEvents)
                 {
                     var iconX = day.bounds.X + Game1.tileSize - iconOffset;
-                    var iconY = day.bounds.Y + Game1.tileSize / 10;
+                    var iconY = day.bounds.Y + Game1.tileSize / 10 - 2;
 
                     var alpha = day.myID < Game1.dayOfMonth ? 0.7f : 1f;
 
