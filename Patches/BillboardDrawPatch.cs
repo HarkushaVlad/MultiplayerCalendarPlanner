@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MultiplayerCalendarPlanner.Constants;
 using MultiplayerCalendarPlanner.Data;
 using MultiplayerCalendarPlanner.Utils;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -29,6 +30,9 @@ namespace MultiplayerCalendarPlanner.Patches
 
         public static void Prefix(Billboard __instance, ref bool __state)
         {
+            if (!Context.IsMultiplayer)
+                return;
+
             var hoverTextField =
                 typeof(Billboard).GetField("hoverText", BindingFlags.NonPublic | BindingFlags.Instance);
             if (hoverTextField == null)
@@ -40,6 +44,9 @@ namespace MultiplayerCalendarPlanner.Patches
 
         public static void Postfix(Billboard __instance, SpriteBatch b)
         {
+            if (!Context.IsMultiplayer)
+                return;
+
             if (!BillboardUtils.IsCalendar(__instance))
                 return;
 

@@ -20,7 +20,7 @@ public static class CalendarManager
 
     public static void ClearData()
     {
-        ModEntry.StaticHelper.Data.WriteSaveData<>(ModDataKey, null);
+        ModEntry.StaticHelper.Data.WriteSaveData<CalendarData>(ModDataKey, null);
     }
 
     public static void AddEvent(CalendarEvent calendarEvent)

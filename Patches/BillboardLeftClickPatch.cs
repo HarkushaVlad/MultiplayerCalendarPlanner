@@ -3,6 +3,7 @@ using MultiplayerCalendarPlanner.Constants;
 using MultiplayerCalendarPlanner.Data;
 using MultiplayerCalendarPlanner.UI;
 using MultiplayerCalendarPlanner.Utils;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -19,10 +20,10 @@ namespace MultiplayerCalendarPlanner.Patches
             );
         }
 
-        public static bool Prefix(Billboard __instance, int x, int y, bool playSound)
+        public static void Prefix(Billboard __instance, int x, int y, bool playSound)
         {
-            if (!BillboardUtils.IsCalendar(__instance))
-                return true;
+            if (!BillboardUtils.IsCalendar(__instance) || !Context.IsMultiplayer)
+                return;
 
             List<ClickableTextureComponent> calendarDays = __instance.calendarDays;
 
@@ -83,11 +84,7 @@ namespace MultiplayerCalendarPlanner.Patches
                 ));
 
                 Game1.dialogueUp = true;
-
-                return false;
             }
-
-            return true;
         }
 
         private static bool IsReserved(Activity activity, List<CalendarEvent> eventsForDay)
