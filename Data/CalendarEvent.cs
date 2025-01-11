@@ -1,5 +1,4 @@
 using MultiplayerCalendarPlanner.Constants;
-using StardewModdingAPI;
 using StardewValley;
 
 namespace MultiplayerCalendarPlanner.Data
@@ -8,9 +7,8 @@ namespace MultiplayerCalendarPlanner.Data
     {
         private int _day;
         private Season _season;
-        private string _playerName;
+        private long _playerId;
         private Activity _activity;
-        private readonly IModHelper _helper;
 
         public int Day
         {
@@ -24,10 +22,10 @@ namespace MultiplayerCalendarPlanner.Data
             set => _season = value;
         }
 
-        public string PlayerName
+        public long PlayerId
         {
-            get => _playerName;
-            set => _playerName = value;
+            get => _playerId;
+            set => _playerId = value;
         }
 
         public Activity Activity
@@ -36,21 +34,26 @@ namespace MultiplayerCalendarPlanner.Data
             set => _activity = value;
         }
 
-        public CalendarEvent(int day, Season season, string playerName, Activity activity, IModHelper helper)
+        public CalendarEvent(int day, Season season, long playerId, Activity activity)
         {
             _day = day;
             _season = season;
-            _playerName = playerName;
+            _playerId = playerId;
             _activity = activity;
-            _helper = helper;
         }
 
         public override string ToString()
         {
-            return _helper.Translation.Get("event.string",
+            var playerName = Game1.player.UniqueMultiplayerID == _playerId
+                ? Game1.player.Name
+                : Game1.otherFarmers.TryGetValue(_playerId, out var farmer)
+                    ? farmer.Name
+                    : _playerId.ToString();
+
+            return ModEntry.StaticHelper.Translation.Get("event.string",
                 new
                 {
-                    playerName = _playerName,
+                    playerName,
                     activity = _activity,
                     day = _day,
                     season = _season

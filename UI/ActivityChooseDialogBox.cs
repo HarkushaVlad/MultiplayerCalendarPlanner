@@ -1,5 +1,8 @@
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MultiplayerCalendarPlanner.Constants;
+using MultiplayerCalendarPlanner.Data;
+using MultiplayerCalendarPlanner.Sync;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -7,8 +10,11 @@ namespace MultiplayerCalendarPlanner.UI;
 
 public class ActivityChooseDialogBox : DialogueBox
 {
-    public ActivityChooseDialogBox(string dialogue, Response[] responses) : base(dialogue, responses)
+    private readonly int _selectedDay;
+
+    public ActivityChooseDialogBox(string dialogue, Response[] responses, int selectedDay) : base(dialogue, responses)
     {
+        _selectedDay = selectedDay;
     }
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -23,12 +29,34 @@ public class ActivityChooseDialogBox : DialogueBox
         }
 
         if (selectedResponse != -1)
-        {
-            var responseKey = responses[selectedResponse].responseKey;
-            Game1.chatBox.addMessage($"Selected response: {responseKey}", Color.White);
-        }
+            HandleSelectedActivity();
 
         CustomCloseDialogue();
+    }
+
+    private void HandleSelectedActivity()
+    {
+        if (selectedResponse == -1)
+            return;
+
+        var responseKey = responses[selectedResponse].responseKey;
+        var activity = Enum.Parse<Activity>(responseKey);
+        var season = (Season)Enum.Parse(typeof(Season), Game1.currentSeason, true);
+        var playerId = Game1.player.UniqueMultiplayerID;
+
+        var calendarEvent = new CalendarEvent(_selectedDay, season, playerId, activity);
+
+        CalendarManager.AddEvent(calendarEvent);
+        
+        if (Context.IsMainPlayer)
+        {
+            CalendarManager.SaveData();
+            MultiplayerManager.AddHostEventToFarmHands(calendarEvent);
+        }
+        else
+        {
+            MultiplayerManager.AddFarmHandEventToAll(calendarEvent);
+        }
     }
 
     public override void receiveRightClick(int x, int y, bool playSound = true)

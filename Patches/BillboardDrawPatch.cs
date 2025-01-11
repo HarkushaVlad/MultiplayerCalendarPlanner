@@ -2,6 +2,8 @@ using System.Reflection;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MultiplayerCalendarPlanner.Constants;
+using MultiplayerCalendarPlanner.Data;
 using MultiplayerCalendarPlanner.Utils;
 using StardewValley;
 using StardewValley.Menus;
@@ -50,64 +52,71 @@ namespace MultiplayerCalendarPlanner.Patches
 
             foreach (var day in calendarDays)
             {
-                var hammerIcon = IconUtils.GetHammerTexture(
-                    day.bounds.X + Game1.tileSize - Game1.tileSize / 32,
-                    day.bounds.Y + Game1.tileSize / 10
-                );
+                var season = (Season)Enum.Parse(typeof(Season), Game1.currentSeason, true);
+                var dayEvents = CalendarManager.GetEventsForDay(day.myID, season);
 
-                hammerIcon.draw(b);
-
-                if (hammerIcon.containsPoint(x, y))
+                foreach (var calendarEvent in dayEvents)
                 {
-                    customHoverText =
-                        ModEntry.StaticHelper.Translation.Get("event.reserveRobin",
-                            new { playerName = Game1.player.Name });
+                    var iconPosition = new Vector2(
+                        day.bounds.X + Game1.tileSize / 4,
+                        day.bounds.Y + Game1.tileSize / 4
+                    );
+
+                    var activityIcon = calendarEvent.Activity switch
+                    {
+                        Activity.Robin => IconUtils.GetHammerTexture(
+                            day.bounds.X + Game1.tileSize - Game1.tileSize / 32,
+                            day.bounds.Y + Game1.tileSize / 10
+                        ),
+                        Activity.HardWood => IconUtils.GetHardWoodTexture(
+                            day.bounds.X + Game1.tileSize + Game1.tileSize / 2,
+                            day.bounds.Y + Game1.tileSize / 10
+                        ),
+                        _ => null
+                    };
+
+                    if (activityIcon == null)
+                        return;
+
+                    activityIcon.draw(b);
+
+                    var farmerPortraitPosition = new Vector2(
+                        iconPosition.X + Game1.tileSize / 2,
+                        iconPosition.Y
+                    );
+
+                    var farmer = Game1.GetPlayer(calendarEvent.PlayerId);
+
+                    farmer?.FarmerRenderer.drawMiniPortrat(
+                        b,
+                        farmerPortraitPosition,
+                        layerDepth: 0.91f,
+                        scale: 1.5f,
+                        facingDirection: 2,
+                        who: farmer
+                    );
+
+                    if (activityIcon.containsPoint(x, y))
+                    {
+                        var playerName = farmer?.Name;
+
+                        customHoverText = calendarEvent.Activity switch
+                        {
+                            Activity.Robin => ModEntry.StaticHelper.Translation.Get(
+                                "event.reserveRobin",
+                                new { playerName }
+                            ),
+                            Activity.HardWood => ModEntry.StaticHelper.Translation.Get(
+                                "event.reserveSecretWoods",
+                                new { playerName }
+                            ),
+                            _ => ModEntry.StaticHelper.Translation.Get(
+                                "event.unknown",
+                                new { playerName }
+                            )
+                        };
+                    }
                 }
-
-                var farmer = Game1.player;
-                var farmerPortrait = farmer.FarmerRenderer;
-
-                var portraitPosition = new Vector2(
-                    hammerIcon.bounds.X + Game1.tileSize / 8,
-                    hammerIcon.bounds.Y + Game1.tileSize / 6
-                );
-
-                farmerPortrait.drawMiniPortrat(
-                    b,
-                    portraitPosition,
-                    layerDepth: 0.89f,
-                    scale: 1.8f,
-                    facingDirection: 2,
-                    who: farmer
-                );
-
-                var hardWoodIcon = IconUtils.GetHardWoodTexture(
-                    day.bounds.X + Game1.tileSize + Game1.tileSize / 2,
-                    day.bounds.Y + Game1.tileSize / 10
-                );
-
-                hardWoodIcon.draw(b);
-
-                if (hardWoodIcon.containsPoint(x, y))
-                {
-                    customHoverText =
-                        ModEntry.StaticHelper.Translation.Get("event.reserveSecretWoods",
-                            new { playerName = Game1.player.Name });
-                }
-
-                var portraitPositionHardwood = new Vector2(
-                    hardWoodIcon.bounds.X + Game1.tileSize / 32,
-                    hardWoodIcon.bounds.Y + Game1.tileSize / 6
-                );
-
-                farmerPortrait.drawMiniPortrat(
-                    b,
-                    portraitPositionHardwood,
-                    layerDepth: 0.89f,
-                    scale: 1.8f,
-                    facingDirection: 2,
-                    who: farmer
-                );
             }
 
             if (!string.IsNullOrEmpty(customHoverText))
@@ -115,9 +124,7 @@ namespace MultiplayerCalendarPlanner.Patches
                 IClickableMenu.drawHoverText(b, customHoverText, Game1.dialogueFont);
             }
 
-            if (
-                !string.IsNullOrEmpty(_originalHoverText) && string.IsNullOrEmpty(customHoverText)
-            )
+            if (!string.IsNullOrEmpty(_originalHoverText) && string.IsNullOrEmpty(customHoverText))
             {
                 IClickableMenu.drawHoverText(b, _originalHoverText, Game1.dialogueFont);
             }

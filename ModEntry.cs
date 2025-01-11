@@ -10,6 +10,7 @@ namespace MultiplayerCalendarPlanner
     internal sealed class ModEntry : Mod
     {
         public static IModHelper StaticHelper = null!;
+        public static IMonitor StaticMonitor = null!;
 
         public override void Entry(IModHelper helper)
         {
@@ -18,20 +19,24 @@ namespace MultiplayerCalendarPlanner
             BillboardLeftClickPatch.ApplyPatch(harmony);
 
             StaticHelper = helper;
+            StaticMonitor = Monitor;
 
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
             helper.Events.GameLoop.Saving += OnSaving;
             helper.Events.Multiplayer.ModMessageReceived += OnMessageReceived;
+            helper.Events.Multiplayer.PeerConnected += OnPeerConnected;
         }
 
         private void OnSaveLoaded(object? sender, EventArgs e)
         {
-            CalendarManager.LoadData();
+            if (Context.IsMainPlayer)
+                CalendarManager.LoadData();
         }
 
         private void OnSaving(object? sender, EventArgs e)
         {
-            CalendarManager.SaveData();
+            if (Context.IsMainPlayer)
+                CalendarManager.SaveData();
         }
 
         private void OnMessageReceived(object? sender, ModMessageReceivedEventArgs e)
@@ -39,8 +44,15 @@ namespace MultiplayerCalendarPlanner
             if (e.FromModID != ModManifest.UniqueID)
                 return;
 
-            if (Context.IsMainPlayer)
-                MultiplayerManager.HandleReceivedMessage(e);
+            MultiplayerManager.HandleReceivedMessage(e);
+        }
+
+        private void OnPeerConnected(object? sender, PeerConnectedEventArgs e)
+        {
+            if (!Context.IsMainPlayer)
+                return;
+
+            MultiplayerManager.AddHostCalendarDataToFarmHands(CalendarManager.GetCalendarData());
         }
     }
 }

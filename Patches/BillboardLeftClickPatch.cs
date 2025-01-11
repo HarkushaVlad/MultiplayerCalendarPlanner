@@ -1,5 +1,4 @@
 using HarmonyLib;
-using Microsoft.Xna.Framework;
 using MultiplayerCalendarPlanner.Constants;
 using MultiplayerCalendarPlanner.UI;
 using MultiplayerCalendarPlanner.Utils;
@@ -30,14 +29,18 @@ namespace MultiplayerCalendarPlanner.Patches
             {
                 if (!day.bounds.Contains(x, y))
                     continue;
-                
-                __instance.SetChildMenu(new ActivityChooseDialogBox("",
+
+                __instance.SetChildMenu(new ActivityChooseDialogBox
+                (
+                    ModEntry.StaticHelper.Translation.Get("event.reserve", new { day = day.myID }),
                     new[]
                     {
                         new Response(Activity.Robin.ToString(), "Reserve Robin for a project"),
                         new Response(Activity.HardWood.ToString(), "Reserve the Secret Woods for hardwood gathering")
-                    }));
-                
+                    },
+                    day.myID
+                ));
+
                 Game1.dialogueUp = true;
 
                 return false;

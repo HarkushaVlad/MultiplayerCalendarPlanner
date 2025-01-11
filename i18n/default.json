@@ -1,5 +1,7 @@
 {
-  "event.reserveRobin": "{{playerName}} has reserved\nRobin for a project.",
+  "event.reserveRobin": "{{playerName}} has reserved Robin for a project.",
   "event.reserveSecretWoods": "{{playerName}} has reserved the Secret Woods\nfor hardwood gathering.",
+  "event.unknown": "{{playerName}} has reserved the unknown event.",
+  "event.reserve": "What do you want to reserve on {{day}}?",
   "event.string": "{{playerName}} reserves {{activity}} on day {{day}} of {{season}}"
 }
