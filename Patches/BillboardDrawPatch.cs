@@ -114,20 +114,20 @@ namespace MultiplayerCalendarPlanner.Patches
                         var playerName = farmer != null
                             ? farmer.Name
                             : ModEntry.StaticHelper.Translation.Get(
-                                "event.Player");
+                                "string.Player");
 
                         customHoverText = calendarEvent.Activity switch
                         {
                             Activity.Robin => ModEntry.StaticHelper.Translation.Get(
-                                "event.reserveRobin",
+                                "event.hover.reserveRobin",
                                 new { playerName }
                             ),
                             Activity.HardWood => ModEntry.StaticHelper.Translation.Get(
-                                "event.reserveSecretWoods",
+                                "event.hover.reserveSecretWoods",
                                 new { playerName }
                             ),
                             _ => ModEntry.StaticHelper.Translation.Get(
-                                "event.unknown",
+                                "event.hover.unknown",
                                 new { playerName }
                             )
                         };

@@ -46,14 +46,14 @@ namespace MultiplayerCalendarPlanner.Patches
                 {
                     responses.Add(new Response(
                         MenuResponse.UnreserveRobin.ToString(),
-                        ModEntry.StaticHelper.Translation.Get("event.unreserveRobin")
+                        ModEntry.StaticHelper.Translation.Get("menu.unreserveRobin")
                     ));
                 }
                 else if (!isRobinReserved)
                 {
                     responses.Add(new Response(
                         MenuResponse.ReserveRobin.ToString(),
-                        ModEntry.StaticHelper.Translation.Get("event.reserveRobin")
+                        ModEntry.StaticHelper.Translation.Get("menu.reserveRobin")
                     ));
                 }
 
@@ -61,14 +61,14 @@ namespace MultiplayerCalendarPlanner.Patches
                 {
                     responses.Add(new Response(
                         MenuResponse.UnreserveHardWood.ToString(),
-                        ModEntry.StaticHelper.Translation.Get("event.unreserveSecretWoods")
+                        ModEntry.StaticHelper.Translation.Get("menu.unreserveSecretWoods")
                     ));
                 }
                 else if (!isHardWoodReserved)
                 {
                     responses.Add(new Response(
                         MenuResponse.ReserveHardWood.ToString(),
-                        ModEntry.StaticHelper.Translation.Get("event.reserveSecretWoods")
+                        ModEntry.StaticHelper.Translation.Get("menu.reserveSecretWoods")
                     ));
                 }
 
@@ -78,7 +78,7 @@ namespace MultiplayerCalendarPlanner.Patches
 
                 __instance.SetChildMenu(new ActivityChooseDialogBox
                 (
-                    ModEntry.StaticHelper.Translation.Get("event.reserve", new { day = day.myID }),
+                    ModEntry.StaticHelper.Translation.Get("menu.reserveQuestion", new { day = day.myID }),
                     responses.ToArray(),
                     day.myID
                 ));

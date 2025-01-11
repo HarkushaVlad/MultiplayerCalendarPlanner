@@ -1,10 +1,12 @@
 {
-  "event.Player": "Player",
-  "event.reserveRobin": "{{playerName}} has reserved Robin for a project.",
-  "event.unreserveRobin": "Remove reservation for Robin",
-  "event.reserveSecretWoods": "{{playerName}} has reserved the Secret Woods\nfor hardwood gathering.",
-  "event.unreserveSecretWoods": "Remove reservation for the Secret Woods",
-  "event.unknown": "{{playerName}} has reserved the unknown event.",
-  "event.reserve": "What do you want to reserve on {{day}}?",
-  "event.string": "{{playerName}} reserves {{activity}} on day {{day}} of {{season}}"
+  "event.hover.reserveRobin": "{{playerName}} has reserved Robin for a project.",
+  "event.hover.reserveSecretWoods": "{{playerName}} has reserved the Secret Woods\nfor hardwood gathering.",
+  "event.hover.unknown": "{{playerName}} has reserved the unknown event.",
+  "event.string": "{{playerName}} reserves {{activity}} on day {{day}} of {{season}}",
+  "menu.reserveQuestion": "What do you want to reserve on {{day}}?",
+  "menu.reserveRobin": "Reserve Robin for a project",
+  "menu.unreserveRobin": "Remove reservation for Robin",
+  "menu.reserveSecretWoods": "Reserve the Secret Woods for hardwood gathering",
+  "menu.unreserveSecretWoods": "Remove reservation for the Secret Woods",
+  "string.Player": "Player"
 }
