@@ -26,6 +26,11 @@ public static class CalendarManager
         ModEntry.StaticHelper.Data.WriteSaveData<CalendarData>(ModDataKey, null);
     }
 
+    public static void ResetCalendarTempData()
+    {
+        _calendarData = new CalendarData();
+    }
+
     public static void AddEvent(CalendarEvent calendarEvent)
     {
         _calendarData.Events.Add(calendarEvent);

@@ -27,6 +27,7 @@ namespace MultiplayerCalendarPlanner
             helper.Events.GameLoop.Saving += OnSaving;
             helper.Events.Multiplayer.ModMessageReceived += OnMessageReceived;
             helper.Events.Multiplayer.PeerConnected += OnPeerConnected;
+            helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
         }
 
         private void OnSaveLoaded(object? sender, EventArgs e)
@@ -66,6 +67,11 @@ namespace MultiplayerCalendarPlanner
                 return;
 
             MultiplayerManager.AddHostCalendarDataToFarmHands(CalendarManager.GetCalendarData());
+        }
+
+        private void OnReturnedToTitle(object? sender, ReturnedToTitleEventArgs e)
+        {
+            CalendarManager.ResetCalendarTempData();
         }
     }
 }
