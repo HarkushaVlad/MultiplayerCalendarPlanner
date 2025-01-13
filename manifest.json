@@ -5,5 +5,7 @@
   "Description": "Adds the ability to mark calendar days to indicate that a player reserves in-game resources for themselves.",
   "UniqueID": "Reprodudix.MultiplayerCalendarPlanner",
   "EntryDll": "MultiplayerCalendarPlanner.dll",
-  "UpdateKeys": []
+  "UpdateKeys": [
+    "Nexus:30790"
+  ]
 }
