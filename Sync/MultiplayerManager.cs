@@ -38,12 +38,28 @@ public static class MultiplayerManager
         SendMessage(calendarEvent, MultiplayerMessage.AddFarmHandEventToAll);
     }
 
+    public static void AddFarmHandEventsToAll(List<CalendarEvent> calendarEvents)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: false, "AddFarmHandEventsToAll"))
+            return;
+
+        SendMessage(calendarEvents, MultiplayerMessage.AddFarmHandEventsToAll);
+    }
+
     public static void RemoveFarmHandEventFromAll(CalendarEvent calendarEvent)
     {
         if (!IsAllowedToSend(isMainPlayerRequired: false, "RemoveFarmHandEventFromAll"))
             return;
 
         SendMessage(calendarEvent, MultiplayerMessage.RemoveFarmHandEventFromAll);
+    }
+
+    public static void RemoveFarmHandEventsFromAll(List<CalendarEvent> calendarEvents)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: false, "RemoveFarmHandEventsFromAll"))
+            return;
+
+        SendMessage(calendarEvents, MultiplayerMessage.RemoveFarmHandEventsFromAll);
     }
 
     public static void AddHostEventToFarmHands(CalendarEvent calendarEvent)
@@ -54,12 +70,28 @@ public static class MultiplayerManager
         SendMessage(calendarEvent, MultiplayerMessage.AddHostEventToFarmHands);
     }
 
+    public static void AddHostEventsToFarmHands(List<CalendarEvent> calendarEvents)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: true, "AddHostEventsToFarmHands"))
+            return;
+
+        SendMessage(calendarEvents, MultiplayerMessage.AddHostEventsToFarmHands);
+    }
+
     public static void RemoveHostEventFromFarmHands(CalendarEvent calendarEvent)
     {
         if (!IsAllowedToSend(isMainPlayerRequired: true, "RemoveHostEventFromFarmHands"))
             return;
 
         SendMessage(calendarEvent, MultiplayerMessage.RemoveHostEventFromFarmHands);
+    }
+
+    public static void RemoveHostEventsFromFarmHands(List<CalendarEvent> calendarEvents)
+    {
+        if (!IsAllowedToSend(isMainPlayerRequired: true, "RemoveHostEventsFromFarmHands"))
+            return;
+
+        SendMessage(calendarEvents, MultiplayerMessage.RemoveHostEventsFromFarmHands);
     }
 
     public static void AddHostCalendarDataToFarmHands(CalendarData calendarData)
@@ -88,9 +120,25 @@ public static class MultiplayerManager
                     CalendarManager.SaveData();
                 break;
 
+            case MultiplayerMessage.AddFarmHandEventsToAll:
+                var farmHandEvents = e.ReadAs<List<CalendarEvent>>();
+                CalendarManager.AddEvents(farmHandEvents);
+
+                if (Context.IsMainPlayer)
+                    CalendarManager.SaveData();
+                break;
+
             case MultiplayerMessage.RemoveFarmHandEventFromAll:
                 var farmHandRemoveEvent = e.ReadAs<CalendarEvent>();
                 CalendarManager.RemoveEvent(farmHandRemoveEvent);
+
+                if (Context.IsMainPlayer)
+                    CalendarManager.SaveData();
+                break;
+
+            case MultiplayerMessage.RemoveFarmHandEventsFromAll:
+                var farmHandRemoveEvents = e.ReadAs<List<CalendarEvent>>();
+                CalendarManager.RemoveEvents(farmHandRemoveEvents);
 
                 if (Context.IsMainPlayer)
                     CalendarManager.SaveData();
@@ -104,12 +152,28 @@ public static class MultiplayerManager
                 CalendarManager.AddEvent(hostEvent);
                 break;
 
+            case MultiplayerMessage.AddHostEventsToFarmHands:
+                if (Context.IsMainPlayer)
+                    break;
+
+                var hostEvents = e.ReadAs<List<CalendarEvent>>();
+                CalendarManager.AddEvents(hostEvents);
+                break;
+
             case MultiplayerMessage.RemoveHostEventFromFarmHands:
                 if (Context.IsMainPlayer)
                     break;
 
                 var hostRemoveEvent = e.ReadAs<CalendarEvent>();
                 CalendarManager.RemoveEvent(hostRemoveEvent);
+                break;
+
+            case MultiplayerMessage.RemoveHostEventsFromFarmHands:
+                if (Context.IsMainPlayer)
+                    break;
+
+                var hostRemoveEvents = e.ReadAs<List<CalendarEvent>>();
+                CalendarManager.RemoveEvents(hostRemoveEvents);
                 break;
 
             case MultiplayerMessage.AddHostCalendarDataToFarmHands:

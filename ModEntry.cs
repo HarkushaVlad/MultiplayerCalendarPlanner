@@ -18,6 +18,7 @@ namespace MultiplayerCalendarPlanner
             var harmony = new Harmony(ModManifest.UniqueID);
             BillboardDrawPatch.ApplyPatch(harmony);
             BillboardLeftClickPatch.ApplyPatch(harmony);
+            CarpenterMenuTryToBuildPatch.ApplyPatch(harmony);
 
             StaticHelper = helper;
             StaticMonitor = Monitor;
@@ -53,7 +54,7 @@ namespace MultiplayerCalendarPlanner
 
         private void OnMessageReceived(object? sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID != ModManifest.UniqueID || !Context.IsMultiplayer)
+            if (e.FromModID != ModManifest.UniqueID || (!Context.IsMultiplayer && Game1.getAllFarmers().Count() == 1))
                 return;
 
             MultiplayerManager.HandleReceivedMessage(e);
