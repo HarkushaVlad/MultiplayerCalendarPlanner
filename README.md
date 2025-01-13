@@ -27,7 +27,8 @@ wood in the Secret Woods, ensuring all players stay in sync.
 
 3. **Reserve a Day**  
    To reserve an activity, click on a day in the calendar. A menu will appear where you can select the activity (e.g.,
-   Robin's building projects or Secret Woods).
+   Robin's building projects or Secret Woods). When Robin starts a construction project, it will automatically be added
+   to the calendar for the number of days it takes to complete the construction.
 
 4. **Unreserve a Day**  
    To unreserve an activity, click the day again and choose the option to remove the reservation.
