@@ -1,0 +1,12 @@
+{
+  "event.hover.reserveRobin": "{{playerName}}已经预约罗宾的建筑工程.",
+  "event.hover.reserveSecretWoods": "{{playerName}}已经预约秘密森林的硬木砍伐.",
+  "event.hover.unknown": "{{playerName}}已经预约未知事件.",
+  "event.string": "{{playerName}}预约{{season}}{{day}}的{{activity}}.",
+  "menu.reserveQuestion": "你想在{{day}}预约什么?",
+  "menu.reserveRobin": "预约罗宾的建筑工程",
+  "menu.unreserveRobin": "取消预约罗宾的建筑工程",
+  "menu.reserveSecretWoods": "预约秘密森林的硬木砍伐",
+  "menu.unreserveSecretWoods": "取消预约秘密森林的硬木砍伐",
+  "string.Player": "玩家"
+}
