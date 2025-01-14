@@ -32,7 +32,7 @@ namespace MultiplayerCalendarPlanner
 
         private void OnSaveLoaded(object? sender, EventArgs e)
         {
-            if (!Context.IsMainPlayer || !Context.IsMultiplayer)
+            if (!Context.IsMainPlayer)
                 return;
 
             if (Game1.dayOfMonth == 1)
@@ -47,7 +47,7 @@ namespace MultiplayerCalendarPlanner
 
         private void OnSaving(object? sender, EventArgs e)
         {
-            if (!Context.IsMainPlayer || !Context.IsMultiplayer)
+            if (!Context.IsMainPlayer)
                 return;
 
             CalendarManager.SaveData();
@@ -55,7 +55,7 @@ namespace MultiplayerCalendarPlanner
 
         private void OnMessageReceived(object? sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID != ModManifest.UniqueID || (!Context.IsMultiplayer && Game1.getAllFarmers().Count() == 1))
+            if (e.FromModID != ModManifest.UniqueID)
                 return;
 
             MultiplayerManager.HandleReceivedMessage(e);
@@ -63,7 +63,7 @@ namespace MultiplayerCalendarPlanner
 
         private void OnPeerConnected(object? sender, PeerConnectedEventArgs e)
         {
-            if (!Context.IsMainPlayer || !Context.IsMultiplayer)
+            if (!Context.IsMainPlayer)
                 return;
 
             MultiplayerManager.AddHostCalendarDataToFarmHands(CalendarManager.GetCalendarData());

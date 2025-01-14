@@ -22,7 +22,7 @@ namespace MultiplayerCalendarPlanner.Patches
 
         public static void Prefix(Billboard __instance, int x, int y, bool playSound)
         {
-            if (!BillboardUtils.IsCalendar(__instance) || !Context.IsMultiplayer)
+            if (!BillboardUtils.IsCalendar(__instance))
                 return;
 
             List<ClickableTextureComponent> calendarDays = __instance.calendarDays;

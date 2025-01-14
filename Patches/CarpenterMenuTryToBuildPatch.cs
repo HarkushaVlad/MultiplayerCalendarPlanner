@@ -18,7 +18,7 @@ namespace MultiplayerCalendarPlanner.Patches
 
         public static void Postfix(CarpenterMenu __instance, bool __result)
         {
-            if (!Context.IsMultiplayer || !__result)
+            if (!__result)
                 return;
 
             var buildDays = __instance.Blueprint.BuildDays;
